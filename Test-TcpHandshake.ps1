@@ -92,7 +92,7 @@ $worker = {
             if ($localAddress -eq $Target) { throw 'Choose another computer; local connections may bypass the NIC capture.' }
             $client.Client.Bind([Net.IPEndPoint]::new([Net.IPAddress]::Parse($localAddress), 0))
             $localPort = $client.Client.LocalEndPoint.Port
-            Invoke-Pktmon start --capture --comp nics --pkt-size 128 --file-size 16 --log-mode circular --file-name $etl
+            Invoke-Pktmon start --capture --comp nics --pkt-size 128 --file-size 512 --log-mode circular --file-name $etl
             $capturing = $true
             $started = [DateTimeOffset]::Now.ToString('yyyy-MM-dd HH:mm:ss zzz')
             $connection = 'Timed out after 8 seconds'
