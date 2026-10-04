@@ -6,11 +6,11 @@
 
 ---
 
-Check a TCP handshake from Windows. The dark GUI shows SYN, SYN-ACK and ACK as `True` or `False`, reports completion, displays packet details and saves the tested flow as PCAPNG.
+A Windows PowerShell GUI for inspecting a single outbound TCP connection.
 
 ## Install
 
-You need Windows 11 or Windows Server 2025, Windows PowerShell 5.1, administrator rights, and the built-in Pktmon and NetTCPIP tools. No additional packages are required.
+You need Windows 11 or Windows Server 2025, Windows PowerShell 5.1 and administrator rights. Pktmon and NetTCPIP are built into Windows; no additional packages are required.
 
 Save `Test-TcpHandshake.ps1`, open Windows PowerShell as administrator, and run:
 
@@ -18,53 +18,32 @@ Save `Test-TcpHandshake.ps1`, open Windows PowerShell as administrator, and run:
 powershell.exe -NoProfile -STA -File .\Test-TcpHandshake.ps1
 ```
 
-Enter the destination IPv4 address and TCP port, then select **Run test**. **Copy result** copies the diagnostic text.
+## What it does
 
-## Results
+Starts a short Pktmon capture, attempts a TCP connection and matches the SYN → SYN-ACK → ACK flow using sequence and acknowledgment numbers. Shows the connection result, packet details and a filtered PCAPNG saved under `%LOCALAPPDATA%\TcpHandshake-*`.
 
-Example of a complete handshake:
+## Output
 
-```text
-Handshake   Yes; SYN -> SYN-ACK -> ACK confirmed locally
-Source      10.20.10.15:51432
-Target      10.20.30.40:443
-TCP connect Connected
+Screenshots from the native Windows 11 validation.
 
-SYN         True
-SYN-ACK     True
-ACK         True
+**Ready.** Enter the destination IPv4 address and TCP port.
 
-  1 OUT SYN             SEQ=100 ACK=0
-  2 IN  SYN,ACK         SEQ=200 ACK=101
-  3 OUT ACK             SEQ=101 ACK=201
-```
+![GUI ready for a TCP handshake test](assets/gui-ready.png)
 
-`OUT` means sent; `IN` means received. `True` confirms a step matching the preceding steps; `False` means it was not confirmed. A SYN-ACK without a captured SYN stays `False`, even when its flags appear in the packet list. `Handshake` reports completion separately and identifies incomplete capture evidence when TCP connect succeeds. Rows follow capture order; repeated rows may be duplicate observations.
+**Capturing.** The test runs in the background; **Run test** remains disabled until it finishes.
 
-| Result | Meaning |
-| --- | --- |
-| Yes; SYN → SYN-ACK → ACK confirmed locally | All three matching steps were captured locally. |
-| Yes; TCP connect succeeded; packet evidence incomplete | Windows completed the connection, but the capture cannot confirm every step. |
-| Incoming RST observed; handshake not confirmed | A reset was received in the tested flow. Its origin and acceptance by the TCP stack are not established. |
-| SYN and SYN-ACK matched; final ACK not confirmed | The first two steps match; the final matching ACK is absent. |
-| Not confirmed; SYN observed; no matching SYN-ACK | A SYN was captured without a matching response. |
-| Inconclusive: no matching SYN captured | The capture provides insufficient evidence for this test. |
+![GUI while capturing and testing](assets/gui-capturing.png)
 
-Correlate the source port and start time with firewall logs. Matching packets are saved as `flow.pcapng` in a private `TcpHandshake-*` folder under `%LOCALAPPDATA%`.
+**Completed.** `Handshake` reports the verdict. `SYN`, `SYN-ACK` and `ACK` show matched steps as `True` or `False`; `False` means the capture did not confirm that step.
 
-## Limitations
+![GUI showing a confirmed SYN, SYN-ACK and ACK flow](assets/gui-result.png)
 
-- Tests one ordinary outbound IPv4 handshake and waits up to eight seconds for TCP connect; capture setup, stopping and conversion take additional time. Supports little-endian Ethernet PCAPNG, VLAN tags and unfragmented IPv4.
-- Evidence is local: missing packets do not prove a firewall block. No TLS, application checks, other-application monitoring or proof of final ACK delivery; packets are not authenticated.
-- Avoid concurrent Pktmon sessions. Existing filters and VPN encapsulation can affect visibility. Capture uses a 512 MB circular log and 128 bytes per packet; analysis stops above 64 MiB or 512 matching packets.
-- Capture briefly includes other traffic. Raw files are removed after stopping; forced termination or stop failure can leave them behind. Delete retained captures when no longer needed; inspect `pktmon status` if stopping fails.
+## Demo
 
-Validated on GitHub-hosted Windows 11 ARM and Windows Server 2025 x64 with Windows PowerShell 5.1: **41 native checks per system, zero failures**. The original WPF GUI, administrator and STA requirements, open-port handshake, incoming reset, no-response timeout, clipboard, capture-folder permissions and cleanup were exercised. [Validation run](https://github.com/delriscotechnologies/synack-check/actions/runs/37235068730).
+Enter `1.1.1.1` and port `443`, then select **Run test**. **Copy result** copies the diagnostic text. Use the source port and start time to correlate the test with firewall logs.
 
-## Security
+## Scope and limits
 
-Validates addresses and ports, uses Pktmon's system path with separate arguments, bounds packet processing and restricts capture folders to the current user and SYSTEM. It only stops capture after its own start succeeds. Captures may contain sensitive data; the review does not guarantee zero vulnerabilities.
-
-## References
-
-[Pktmon capture](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/pktmon-start) · [PCAPNG conversion](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/pktmon-etl2pcap) · [TCP specification](https://www.rfc-editor.org/rfc/rfc9293.html)
+- One outbound IPv4 test, with an eight-second TCP connect timeout; no TLS or application checks.
+- VPNs, Pktmon filters and missing packets can limit local evidence. Missing packets do not establish a firewall block.
+- Avoid concurrent Pktmon sessions. Delete retained captures when finished; forced termination can leave sensitive raw files.
