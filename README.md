@@ -10,7 +10,7 @@ Check a TCP handshake from Windows. The dark GUI shows SYN, SYN-ACK and ACK as `
 
 ## Install
 
-You need Windows 11, Windows PowerShell 5.1, administrator rights, and the built-in Pktmon and NetTCPIP tools. No additional packages are required.
+You need Windows 11 or Windows Server 2025, Windows PowerShell 5.1, administrator rights, and the built-in Pktmon and NetTCPIP tools. No additional packages are required.
 
 Save `Test-TcpHandshake.ps1`, open Windows PowerShell as administrator, and run:
 
@@ -56,10 +56,10 @@ Correlate the source port and start time with firewall logs. Matching packets ar
 
 - Tests one ordinary outbound IPv4 handshake and waits up to eight seconds for TCP connect; capture setup, stopping and conversion take additional time. Supports little-endian Ethernet PCAPNG, VLAN tags and unfragmented IPv4.
 - Evidence is local: missing packets do not prove a firewall block. No TLS, application checks, other-application monitoring or proof of final ACK delivery; packets are not authenticated.
-- Avoid concurrent Pktmon sessions. Existing filters and VPN encapsulation can affect visibility. Capture is limited to a 16 MB circular log and 128 bytes per packet; analysis stops above 64 MiB or 512 matching packets.
+- Avoid concurrent Pktmon sessions. Existing filters and VPN encapsulation can affect visibility. Capture uses a 512 MB circular log and 128 bytes per packet; analysis stops above 64 MiB or 512 matching packets.
 - Capture briefly includes other traffic. Raw files are removed after stopping; forced termination or stop failure can leave them behind. Delete retained captures when no longer needed; inspect `pktmon status` if stopping fails.
 
-Validated with 36 synthetic checks and six simulated capture scenarios on Linux. Native Windows capture, GUI and permissions still need verification with an open, closed and silently filtered remote port.
+Validated on GitHub-hosted Windows 11 ARM and Windows Server 2025 x64 with Windows PowerShell 5.1: **41 native checks per system, zero failures**. The original WPF GUI, administrator and STA requirements, open-port handshake, incoming reset, no-response timeout, clipboard, capture-folder permissions and cleanup were exercised. [Validation run](https://github.com/delriscotechnologies/synack-check/actions/runs/37235068730).
 
 ## Security
 
