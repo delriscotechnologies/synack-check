@@ -37,13 +37,3 @@ Screenshots from the native Windows 11 validation.
 **Completed.** `Handshake` reports the verdict. `SYN`, `SYN-ACK` and `ACK` show matched steps as `True` or `False`; `False` means the capture did not confirm that step.
 
 ![GUI showing a confirmed SYN, SYN-ACK and ACK flow](assets/gui-result.png)
-
-## Demo
-
-Enter `1.1.1.1` and port `443`, then select **Run test**. **Copy result** copies the diagnostic text. Use the source port and start time to correlate the test with firewall logs.
-
-## Scope and limits
-
-- One outbound IPv4 test, with an eight-second TCP connect timeout; no TLS or application checks.
-- VPNs, Pktmon filters and missing packets can limit local evidence. Missing packets do not establish a firewall block.
-- Avoid concurrent Pktmon sessions. Delete retained captures when finished; forced termination can leave sensitive raw files.
