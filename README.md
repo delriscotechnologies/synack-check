@@ -10,8 +10,6 @@ A Windows PowerShell GUI for inspecting a single outbound TCP connection.
 
 ## Install
 
-You need Windows 11 or Windows Server 2025, Windows PowerShell 5.1 and administrator rights. Pktmon and NetTCPIP are built into Windows; no additional packages are required.
-
 Save `Test-TcpHandshake.ps1`, open Windows PowerShell as administrator, and run:
 
 ```powershell
