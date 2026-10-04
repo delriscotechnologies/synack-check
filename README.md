@@ -10,7 +10,7 @@ A Windows PowerShell GUI for inspecting a single outbound TCP connection.
 
 ## Install
 
-Save `synack-check.ps1` and run it from its folder in Windows PowerShell 5.1 as administrator:
+Save synack-check.ps1 and run it from its folder in Windows PowerShell 5.1 as administrator:
 
 ```powershell
 .\synack-check.ps1
@@ -18,7 +18,7 @@ Save `synack-check.ps1` and run it from its folder in Windows PowerShell 5.1 as 
 
 ## What it does
 
-Starts a short Pktmon capture, attempts a TCP connection and matches the SYN → SYN-ACK → ACK flow using sequence and acknowledgment numbers. Shows the connection result, packet details and a filtered PCAPNG in a `TcpHandshake-*` folder on your Desktop.
+Starts a short Pktmon capture, attempts a TCP connection and matches the SYN → SYN-ACK → ACK flow using sequence and acknowledgment numbers. Shows the connection result, packet details and a filtered PCAPNG in a new folder on your Desktop for each test.
 
 ## Output
 
@@ -32,6 +32,6 @@ Screenshots from the native Windows 11 validation.
 
 ![GUI while capturing and testing](assets/gui-capturing.png)
 
-**Completed.** `Handshake` reports the verdict. `SYN`, `SYN-ACK` and `ACK` show matched steps as `True` or `False`; `False` means the capture did not confirm that step.
+**Completed.** Handshake reports the verdict. SYN, SYN-ACK and ACK show matched steps as True or False; False means the capture did not confirm that step.
 
 ![GUI showing a confirmed SYN, SYN-ACK and ACK flow](assets/gui-result.png)
