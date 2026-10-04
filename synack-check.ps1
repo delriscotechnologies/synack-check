@@ -1,7 +1,7 @@
 ﻿$ErrorActionPreference = 'Stop'
 if ($env:OS -ne 'Windows_NT') { throw 'This script requires Windows.' }
 Add-Type -AssemblyName PresentationFramework
-if ([Threading.Thread]::CurrentThread.ApartmentState -ne 'STA') { throw 'Run powershell.exe -NoProfile -STA -File .\Test-TcpHandshake.ps1' }
+if ([Threading.Thread]::CurrentThread.ApartmentState -ne 'STA') { throw 'Run powershell.exe -NoProfile -STA -File .\synack-check.ps1' }
 $admin = [Security.Principal.WindowsPrincipal]::new([Security.Principal.WindowsIdentity]::GetCurrent())
 if (-not $admin.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) { throw 'Open PowerShell as administrator first.' }
 $pktmon = Join-Path ([Environment]::GetFolderPath('System')) 'pktmon.exe'

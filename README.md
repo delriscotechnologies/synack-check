@@ -10,10 +10,10 @@ A Windows PowerShell GUI for inspecting a single outbound TCP connection.
 
 ## Install
 
-Save `Test-TcpHandshake.ps1`, open Windows PowerShell as administrator, and run:
+Save `synack-check.ps1`, open Windows PowerShell as administrator, and run:
 
 ```powershell
-powershell.exe -NoProfile -STA -File .\Test-TcpHandshake.ps1
+powershell.exe -NoProfile -STA -File .\synack-check.ps1
 ```
 
 ## What it does
