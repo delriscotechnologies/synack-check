@@ -78,7 +78,7 @@ $worker = {
         [IO.File]::Move($FlowPath + '.partial', $FlowPath)
     }
     $capturing = $false; $client = $null
-    $folder = Join-Path ([Environment]::GetFolderPath('LocalApplicationData')) ('TcpHandshake-' + [guid]::NewGuid().ToString('N'))
+    $folder = Join-Path ([Environment]::GetFolderPath('DesktopDirectory')) ('TcpHandshake-' + [guid]::NewGuid().ToString('N'))
     $etl, $pcap, $flow = 'capture.etl', 'capture.pcapng', 'flow.pcapng' | ForEach-Object { Join-Path $folder $_ }
     try {
         $null = New-Item -ItemType Directory -Path $folder
